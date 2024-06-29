@@ -1,150 +1,71 @@
 @extends('layouts.conquer')
-@section('head')
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f4f4f4;
-        color: #333;
-    }
-
-    .container-fluid {
-        padding: 20px;
-        margin: 0;
-    }
-
-    p {
-        font-size: 18px;
-        margin-bottom: 20px;
-    }
-
-    .card {
-        background-color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        margin-bottom: 20px;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        position: relative;
-    }
-
-    .deskripsi {
-        flex-grow: 1;
-    }
-
-    .card img {
-        max-width: 100%;
-        border-radius: 5px;
-        margin-bottom: 10px;
-        float: right;
-    }
-
-    .card-img-top {
-        display: block;
-        height: 250px;
-    }
-
-    .card .links,
-    .card .links2 {
-        text-align: center;
-    }
-
-    .card .links a,
-    .card .links2 a {
-        display: block;
-        text-decoration: none;
-        margin-top: 10px;
-    }
-
-    .btnDelete {
-        display: block;
-        text-decoration: none;
-        margin-top: 10px;
-        width: 100%;
-    }
-
-    .card .links a:hover,
-    .card .links2 a:hover {
-        text-decoration: underline;
-    }
-
-    .tengah {
-        display: flex;
-        justify-content: center;
-    }
-
-    .col-md-4 {
-        margin-bottom: 20px;
-    }
-
-    .container .row {
-        width: 100%;
-    }
-</style>
-@endsection
 
 @section('content')
+<link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}">
+
 @if(session('status'))
 <div class="alert alert-success">{{session('status')}}</div>
 @endif
 
-<div class="judul tengah" style="padding-top: 25px;">
-    <h1>List of Products from Hotel {{ $data->name }}</h1>
-</div>
-
-<a href="{{route('product.create')}}" class="btn btn-info">+ New Product</a>
-
-<div class="container-fluid">
-    <div class="row m-0">
-        @foreach($data->products as $d)
-        <div class='col-md-4'>
-            <div class='card'>
-                <div class='card-img-top image tengah'>
-                    @if($d->filenames)
-                    @foreach ($d->filenames as $filename)
-                    <img src="{{ asset('img/product/' . $d->id . '/' . $filename) }}" class="card-img-top"><br>
-                    <form style="display: inline" method="POST" action="{{ url('product/deletePhoto') }}">
-                        @csrf
-                        <input type="hidden" value="{{'img/product/' . $d->id . '/' . $filename}}" name='filepath' />
-                        <input type="submit" value="Delete Photo" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure? ');">
-                    </form>
-                    @endforeach
-                    @endif
-                    <a href="{{ url('product/uploadPhoto/' . $d->id) }}">
-                        <button class='btn btn-xs btn-default'>Upload Photo</button></a>
-                </div>
-                <div class='deskripsi'>
-                    <div>
-                        <h5 style="text-align: center;">{{$d->name}}</h5>
-                    </div>
-                    <div>
-                        <p style="text-align: center; margin: 0;">{{$d->hotel->name}}</p>
-                        <p style="text-align: center; margin: 0;">{{$d->productType->name}}</p>
-                        <p style="text-align: center; margin: 0;">{{$d->price}}</p>
-                        <p style="text-align: center; margin: 0;">{{$d->description}}</p>
-                    </div>
-                    <div class="row" style="display: flex; justify-content:space-evenly;">
-                        <div class="links" style="width: 45%;">
-                            <a href="{{ route('product.show', ['product' => $d->id]) }}" class="btn btn-info">Lihat
-                                detail</a>
-                            <a href="{{ route('product.edit', ['product' => $d->id]) }}" class="btn btn-info">Edit</a>
-                            <form method="POST" action="{{route('product.destroy', $d->id)}}">
-                                @csrf
-                                @method('DELETE')
-                                <input type="submit" value="Delete" class="btn btn-danger btnDelete"
-                                    onclick="return confirm('Are you sure to delete {{$d->id}} - {{$d->name}} ? ');">
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="Title">
+    <div class="hotel-info">
+        <h1>Hotel {{ $data->name }}</h1>
+        <div>
+            @if($data->filenames2)
+            @foreach (array_slice($data->filenames2, 0, 2) as $filename)
+            <img src="{{asset('img/hotel/'.$data->id.'/'.$filename)}}" alt="Photo of {{$data->name}}">
+            @endforeach
+            @endif
         </div>
-        @endforeach
+        <p><strong>Rating:</strong> ★★★★☆</p>
+        <p><strong>Address:</strong> {{$data->address}}</p>
+        <p><strong>Email:</strong> {{$data->email}}</p>
+        <p><strong>Phone Number:</strong> {{$data->phone_number}}</p>
     </div>
 </div>
+
+<div class="card-container">
+    @foreach ($data->products as $d)
+    <div class="card">
+        <div class="card-left">
+            @if($d->filenames)
+            <img class="main-image" src="{{asset('img/product/'.$d->id.'/'.$d->filenames[0])}}"
+                alt="Photo of {{$d->name}}">
+            <div class="sub-images">
+                @foreach (array_slice($d->filenames, 1, 3) as $filename)
+                <img src="{{asset('img/product/'.$d->id.'/'.$filename)}}" alt="Photo of {{$d->name}}">
+                @endforeach
+            </div>
+            @endif
+        </div>
+        <div class="card-middle">
+            <div class="nama">
+                <h2>{{$d->name}}</h2>
+            </div>
+            <br><br><br>
+            <p><strong>Type:</strong>{{$d->productType->name}}</p>
+            <p><strong>Price: Rp</strong> {{$d->price}}</p>
+            <p><strong>Description:</strong> {{$d->description}}</p>
+            <p><strong>Available Room:</strong> {{$d->available_room}}</p>
+        </div>
+        <div class="card-right">
+            <a class="btn btn-info" href="{{ route('addCart', $d->id) }}">Add to Cart</a>
+            <br>
+            <a class="btn btn-warning" href="{{ route('product.edit', ['product' => $d->id]) }}">Edit Product</a>
+            <br>
+            <form method="POST" action="{{route('product.destroy', $d->id)}}">
+                @csrf
+                @method('DELETE')
+                <input type="submit" value="Delete Product" class="btn btn-danger btnDelete"
+                    onclick="return confirm('Are you sure to delete {{$d->id}} - {{$d->name}} ? ');">
+            </form>
+        </div>
+    </div>
+    @endforeach
+</div>
+
+<a href="{{route('product.create')}}" class="btn-create">Create Product</a>
+
 @endsection
 
 @section('javascript')

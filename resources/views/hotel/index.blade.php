@@ -15,26 +15,6 @@
     <div class="card">
         <div class="card-left">
             @if($d->filenames)
-            @if(count($d->filenames) == 1)
-            <img class="main-image full" src="{{asset('img/hotel/'.$d->id.'/'.$d->filenames[0])}}"
-                alt="Photo of {{$d->name}}">
-            @elseif(count($d->filenames) == 2)
-            <img class="main-image" src="{{asset('img/hotel/'.$d->id.'/'.$d->filenames[0])}}"
-                alt="Photo of {{$d->name}}">
-            <div class="sub-images">
-                <img class="sub-image full" src="{{asset('img/hotel/'.$d->id.'/'.$d->filenames[1])}}"
-                    alt="Photo of {{$d->name}}">
-            </div>
-            @elseif(count($d->filenames) == 3)
-            <img class="main-image" src="{{asset('img/hotel/'.$d->id.'/'.$d->filenames[0])}}"
-                alt="Photo of {{$d->name}}">
-            <div class="sub-images">
-                @foreach (array_slice($d->filenames, 1, 2) as $filename)
-                <img class="sub-image half" src="{{asset('img/hotel/'.$d->id.'/'.$filename)}}"
-                    alt="Photo of {{$d->name}}">
-                @endforeach
-            </div>
-            @elseif(count($d->filenames) >= 4)
             <img class="main-image" src="{{asset('img/hotel/'.$d->id.'/'.$d->filenames[0])}}"
                 alt="Photo of {{$d->name}}">
             <div class="sub-images">
@@ -43,11 +23,16 @@
                 @endforeach
             </div>
             @endif
-            @endif
         </div>
         <div class="card-middle">
-            <h3>{{$d->name}}</h3>
+            <div class="nama">
+                <h2>{{$d->name}}</h2>
+                <span class="rating">☆★★★★</span>
+            </div>
+            <br><br><br>
             <p><strong>Address:</strong> {{$d->address}}</p>
+            <p><strong>Email:</strong> {{$d->email}}</p>
+            <p><strong>Phone Number:</strong> {{$d->phone_number}}</p>
         </div>
         <div class="card-right">
             <a class="btn btn-info" href="{{ route('hotel.show', $d->id) }}">See Hotel Products</a>

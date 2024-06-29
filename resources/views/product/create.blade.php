@@ -14,6 +14,10 @@
         <label>Product Description</label>
         <input type="text" name="description" class="form-group" placeholder="Enter Product Price">
     </div>
+    <div class="form-group">
+        <label>Product Available Room</label>
+        <input type="number" name="available_room" class="form-group" placeholder="Enter Available Room">
+    </div>
     {{-- <div class="form-group">
         <label>Image URL</label>
         <input type="text" name="image" class="form-group" placeholder="Enter Image">

@@ -41,6 +41,7 @@ class ProductController extends Controller
                 'price' => 'required',
                 'type' => 'required',
                 'description' => 'required',
+                'available_room' => 'required',
                 // 'image' => 'required',
                 'hotel' => 'required',
             ]
@@ -51,6 +52,7 @@ class ProductController extends Controller
         $data->price = $request->price;
         $data->type_id = $request->type;
         $data->description = $request->description;
+        $data->available_room = $request->available_room;
         // $data->image = $request->image;
         $data->hotel_id = $request->hotel;
         $data->save();
@@ -75,7 +77,7 @@ class ProductController extends Controller
         $data = Product::find($id);
         $hotel = Hotel::all();
         $types = ProductType::all();
-        return view("product.edit", compact('data', 'hotel','types'));
+        return view("product.edit", compact('data', 'hotel', 'types'));
     }
 
     /**
