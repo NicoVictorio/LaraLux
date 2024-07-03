@@ -6,7 +6,7 @@
 <div class="alert alert-success">{{ session('status') }}</div>
 @endif
 
-<a href="#modalCreate" data-toggle="modal" class="btn btn-info">+ New Type(with Modals)</a>
+<a href="#modalCreate" data-toggle="modal" class="btn btn-info">Create Hotel Type</a>
 
 <table class="table">
     <thead>
@@ -25,7 +25,7 @@
             <td>{{ $d->created_at }}</td>
             <td>{{ $d->updated_at }}</td>
             <td>
-                <a class="btn btn-warning" href="{{ route('hoteltype.edit', $d->id) }}">Edit</a>
+                <a class="btn btn-warning" href="{{ route('hoteltype.edit', ['hoteltype' => $d->id]) }}">Edit</a>
             </td>
             <td>
                 <form method="POST" action="{{ route('hoteltype.destroy', $d->id) }}">
@@ -58,8 +58,6 @@
                         <small id="nameHelp" class="form-text text-muted">Please write down the name of
                             type here.</small>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
             </div>
 
             <div class="modal-footer">

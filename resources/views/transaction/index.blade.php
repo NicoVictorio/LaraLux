@@ -16,8 +16,10 @@
                 <th>Created At</th>
                 <th>Updated At</th>
                 <th>Lihat Detail</th>
+                @can('edit-delete-transaction-permission', Auth::user())
                 <th>Edit</th>
                 <th>Delete</th>
+                @endcan 
             </tr>
         </thead>
         <tbody>
@@ -29,13 +31,15 @@
                 <td>{{ $d->updated_at }}</td>
                 <td><a href="#myModal" class="btn btn-default" data-toggle="modal"
                         onclick="getDetailData({{ $d->id }});">Lihat Rincian</a></td>
+                @can('edit-delete-transaction-permission', Auth::user())
                 <td><a href="{{ route('transaction.edit', $d->id) }}" class="btn btn-warning"">Edit</a></td>
-                <td><form method=" POST" action="{{ route('transaction.destroy', $d->id) }}">
+                <td><form method="POST" action="{{ route('transaction.destroy', $d->id) }}">
                         @csrf
                         @method('DELETE')
                         <input type="submit" value="Delete" class="btn btn-danger"
                             onclick="return confirm('Are you sure want to delete this transaction? ');">
                         </form>
+                @endcan
                 </td>
             </tr>
             @endforeach

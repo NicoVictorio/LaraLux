@@ -4,24 +4,34 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
 class CartController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+        $this->authorize('create-transaction-permission', $user);
+
         $products = Product::all();
         return view('cart.index', compact('products'));
     }
 
     public function show($id)
     {
+        $user = Auth::user();
+        $this->authorize('create-transaction-permission', $user);
+
         $product = Product::find($id);
         return view('cart.product-detail', compact('product'));
     }
 
     public function addToCart($id)
     {
+        $user = Auth::user();
+        $this->authorize('create-transaction-permission', $user);
+
         $product = Product::find($id);
         $directory = public_path('img/product/' . $product->id);
         if (File::exists($directory)) {
@@ -46,11 +56,6 @@ class CartController extends Controller
         }
         session()->put('cart', $cart);
         return redirect()->back()->with("status", "Produk Telah ditambahkan ke Cart");
-    }
-
-    public function cart()
-    {
-        return view('frontend.cart');
     }
 
     public function addQuantity(Request $request)

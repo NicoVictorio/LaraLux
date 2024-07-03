@@ -43,15 +43,20 @@
                 <h2>{{$d->name}}</h2>
             </div>
             <br><br><br>
-            <p><strong>Type:</strong>{{$d->productType->name}}</p>
+            <p><strong>Type: </strong>{{$d->productType->name}}</p>
             <p><strong>Price: Rp</strong> {{$d->price}}</p>
             <p><strong>Description:</strong> {{$d->description}}</p>
             <p><strong>Available Room:</strong> {{$d->available_room}}</p>
         </div>
         <div class="card-right">
+            @can('create-transaction-permission', Auth::user())
             <a class="btn btn-info" href="{{ route('addCart', $d->id) }}">Add to Cart</a>
+            @endcan
+            @can('edit-permission', Auth::user())
             <br>
             <a class="btn btn-warning" href="{{ route('product.edit', ['product' => $d->id]) }}">Edit Product</a>
+            @endcan
+            @can('delete-permission', Auth::user())
             <br>
             <form method="POST" action="{{route('product.destroy', $d->id)}}">
                 @csrf
@@ -59,12 +64,15 @@
                 <input type="submit" value="Delete Product" class="btn btn-danger btnDelete"
                     onclick="return confirm('Are you sure to delete {{$d->id}} - {{$d->name}} ? ');">
             </form>
+            @endcan
         </div>
     </div>
     @endforeach
 </div>
 
-<a href="{{route('product.create')}}" class="btn-create">Create Product</a>
+@can('create-permission', Auth::user())
+<a href="{{route('product.createProduct', $data->id)}}" class="btn-create">Create Product</a>
+@endcan
 
 @endsection
 

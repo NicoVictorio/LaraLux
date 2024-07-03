@@ -12,5 +12,8 @@
 </div>
 <br>
 <div class="content">
+    <div class="tengah">
+        <p><a href="{{ route('rp_mostReservedProduct') }}">Report 3 Most Reserved Product</a></p>
+    </div>
 </div>
 @endsection

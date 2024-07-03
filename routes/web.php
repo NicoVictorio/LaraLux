@@ -3,10 +3,11 @@
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\HotelTypeController;
+use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductTypeController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransactionController;
-use App\Models\HotelType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -51,13 +52,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('cart/delete/{id}', [CartController::class, 'deleteFromCart'])->name('delFromCart');
     Route::post('cart/addQty', [CartController::class, 'addQuantity'])->name('addQty');
     Route::post('cart/reduceQty', [CartController::class, 'reduceQuantity'])->name('redQty');
+
+    Route::get('product/createProduct/{hotel_id}', [ProductController::class, 'createProduct'])->name('product.createProduct');
+
+    //membership
+    Route::get('membership', [MemberController::class, 'index'])->name('membership');
+    Route::get('editMembership/{id}', [MemberController::class, 'edit'])->name('membership.editMembership');
+    Route::put('updateMembership/{id}', [MemberController::class, 'update'])->name('membership.updateMembership');
+    Route::get('deleteMembership/{id}', [MemberController::class, 'deleteMembership'])->name('membership.deleteMembership');
+
+    Route::get('/report/mostReservedProduct', [ReportController::class, 'mostReservedProduct'])->name('rp_mostReservedProduct');
+    Route::get('/report/mostMembership', [ReportController::class, 'mostMembership'])->name('rp_mostMembership');
+    Route::get('/report/mostProduct', [ReportController::class, 'mostProduct'])->name('rp_mostProduct');
 });
 
 // Auth
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-//hotel_type
-Route::post('customtype/getEditForm', [HotelTypeController::class, 'getEditForm'])->name('hoteltype.getEditForm');
-Route::post('customtype/saveDataTD', [HotelTypeController::class, 'saveDataTD'])->name('hoteltype.saveDataTD');
-Route::post('customtype/deleteData', [HotelTypeController::class, 'deleteData'])->name('hoteltype.deleteData');

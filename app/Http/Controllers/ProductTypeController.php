@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductTypeController extends Controller
 {
@@ -11,7 +13,11 @@ class ProductTypeController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        $this->authorize('menu-permission', $user);
+
+        $querybuilder = ProductType::all(); // ini untuk pake model
+        return view('product_type.index', ['data' => $querybuilder]);
     }
 
     /**
@@ -19,7 +25,10 @@ class ProductTypeController extends Controller
      */
     public function create()
     {
-        //
+        $user = Auth::user();
+        $this->authorize('menu-permission', $user);
+
+        return view('product_type.create');
     }
 
     /**
@@ -27,7 +36,13 @@ class ProductTypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = Auth::user();
+        $this->authorize('menu-permission', $user);
+
+        $data = new ProductType();
+        $data->name = $request->get('type_name');
+        $data->save();
+        return redirect()->route("producttype.index")->with('status', "Horray, Your new category data is already inserted");
     }
 
     /**
@@ -43,7 +58,12 @@ class ProductTypeController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $user = Auth::user();
+        $this->authorize('menu-permission', $user);
+
+        $type = ProductType::find($id);
+        $data = $type;
+        return view('product_type.edit', compact('data'));
     }
 
     /**
@@ -51,7 +71,14 @@ class ProductTypeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $user = Auth::user();
+        $this->authorize('menu-permission', $user);
+
+        $type = ProductType::find($id);
+        $updateData = $type;
+        $updateData->name = $request->type_name;
+        $updateData->save();
+        return redirect()->route('producttype.index')->with('status', 'Horray ! Your data is successfully updated !');
     }
 
     /**
@@ -59,6 +86,17 @@ class ProductTypeController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = Auth::user();
+        $this->authorize('menu-permission', $user);
+
+        $type = ProductType::find($id);
+        try {
+            $deletedData = $type;
+            $deletedData->delete();
+            return redirect()->route('producttype.index')->with('status', 'Horray ! Your data is successfully deleted !');
+        } catch (\PDOException $ex) {
+            $msg = "Failed to delete data ! Make sure there is no related data before deleting it";
+            return redirect()->route('producttype.index')->with('status', $msg);
+        }
     }
 }

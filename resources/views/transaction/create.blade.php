@@ -62,26 +62,38 @@
             $poin = Auth::user()->poin * 100000;
             $diskon = 0;
             $pointerpakai = 0;
-            if($poin<$grandtotal){ $diskon=$poin; $pointerpakai=floor($poin/100000); } else{
-                $tmp=floor($grandtotal/100000); $diskon=$tmp*100000; $pointerpakai=$tmp; } $grandtotal -=$diskon;
-                @endphp <tr id='discount-row' style='display: none;'>
+            if($poin<$grandtotal)
+            { 
+                $diskon=$poin; 
+                $pointerpakai=floor($poin/100000); 
+            } 
+            else
+            {
+                $tmp=floor($grandtotal/100000); 
+                $diskon=$tmp*100000; 
+                $pointerpakai=$tmp; 
+            } 
+            $grandtotal -=$diskon;
+            @endphp 
+            <tr id='discount-row' style='display: none;'>
                 <td><b>Discount: IDR {{ $diskon }}</b></td>
-                </tr>
-                <tr id='grandtotal-row' style='display: none;'>
-                    <td><b>Grand Total After Discount: IDR {{$grandtotal}}</b></td>
-                </tr>
+            </tr>
+            <tr id='grandtotal-row' style='display: none;'>
+                <td><b>Grand Total After Discount: IDR {{$grandtotal}}</b></td>
+            </tr>
         </tfoot>
     </table>
 
     <input type="hidden" name="pointerpakai" value="{{$pointerpakai}}">
     Your Points: {{ Auth::user()->poin }}
     <br>
+    @if(Auth::user()->poin>0 && $subtotal>100000)
     Apply?
     <select id="option" name="poin">
         <option value="no">NO</option>
         <option value="yes">YES</option>
-    </select>
-    <p></p>
+    </select>        
+    @endif
     <br><br>
     <button type="submit" class="btn btn-primary">PAY</button>
 </form>

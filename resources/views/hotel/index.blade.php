@@ -36,8 +36,11 @@
         </div>
         <div class="card-right">
             <a class="btn btn-info" href="{{ route('hotel.show', $d->id) }}">See Hotel Products</a>
+            @can('edit-permission', Auth::user())
             <br>
             <a class="btn btn-warning" href="{{ route('hotel.edit', $d->id) }}">Edit Hotel</a>
+            @endcan
+            @can('delete-permission', Auth::user())
             <br>
             <form method="POST" action="{{route('hotel.destroy', $d->id)}}">
                 @csrf
@@ -45,11 +48,13 @@
                 <input type="submit" value="Delete Hotel" class="btn btn-danger"
                     onclick="return confirm('Are you sure to delete {{$d->id}} - {{$d->name}} ? ');">
             </form>
+            @endcan
         </div>
     </div>
     @endforeach
 </div>
 
+@can('create-permission', Auth::user())
 <a href="{{route('hotel.create')}}" class="btn-create">Create Hotel</a>
-
+@endcan
 @endsection

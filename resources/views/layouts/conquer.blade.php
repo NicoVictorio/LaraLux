@@ -70,7 +70,6 @@ License: You must have a valid license purchased only from themeforest(the above
 					<img src="{{ asset('conquer/img/logo.png') }}" alt="logo" />
 				</a>
 			</div>
-			]
 			<!-- END LOGO -->
 			<!-- BEGIN RESPONSIVE MENU TOGGLER -->
 			<a href="javascript:;" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -80,12 +79,6 @@ License: You must have a valid license purchased only from themeforest(the above
 			<!-- BEGIN TOP NAVIGATION MENU -->
 			<ul class="nav navbar-nav pull-right">
 				<!-- BEGIN CART DROPDOWN -->
-				<li class="dropdown" id="header_cart_bar" style="color: white;">
-					<a href="{{ route('cart') }}" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown"
-						data-close-others="true">
-						<i class="fa fa-shopping-cart"></i>
-					</a>
-				</li>
 				<!-- END CART DROPDOWN -->
 				<li class="devider">
 					&nbsp;
@@ -99,6 +92,7 @@ License: You must have a valid license purchased only from themeforest(the above
 						<i class="fa fa-angle-down"></i>
 					</a>
 					<ul class="dropdown-menu">
+						@can('create-transaction-permission', Auth::user())
 						<li>
 							<a href="{{route('cart')}}"><i class="fa fa-shopping-cart"></i> My Cart</a>
 						</li>
@@ -107,12 +101,12 @@ License: You must have a valid license purchased only from themeforest(the above
 						</li>
 						<li class="divider">
 						</li>
+						@endcan
 						<li>
 							<a class="dropdown-item fa fa-key" href="{{ route('logout') }}" onclick="event.preventDefault();
 										  document.getElementById('logout-form').submit();">
 								{{ __('Logout') }}
 							</a>
-
 							<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
 								@csrf
 							</form>
@@ -164,6 +158,7 @@ License: You must have a valid license purchased only from themeforest(the above
 							<span class="title">Hotel</span>
 						</a>
 					</li>
+					@can('menu-permission', Auth::user())
 					<li>
 						<a href="{{ route('hoteltype.index') }}">
 							<i class="icon-star"></i>
@@ -178,13 +173,23 @@ License: You must have a valid license purchased only from themeforest(the above
 							<span class="selected"></span>
 						</a>
 					</li>
+					@endcan
 					<li>
 						<a href="{{ route('transaction.index') }}">
-							<i class="icon-star"></i>
+							<i class="icon-list"></i>
 							<span class="title">Transaction</span>
 							<span class="selected"></span>
 						</a>
 					</li>
+					@can('menu-permission', Auth::user())
+					<li>
+						<a href="{{ route('membership') }}">
+							<i class="icon-user"></i>
+							<span class="title">Membership</span>
+							<span class="selected"></span>
+						</a>
+					</li>
+					@endcan
 				</ul>
 				<!-- END SIDEBAR MENU -->
 			</div>

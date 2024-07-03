@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HotelType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HotelTypeController extends Controller
 {
@@ -12,6 +13,9 @@ class HotelTypeController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
+        $this->authorize('menu-permission', $user);
+
         $querybuilder = HotelType::all(); // ini untuk pake model
         return view('hotel_type.index', ['data' => $querybuilder]);
     }
@@ -21,6 +25,9 @@ class HotelTypeController extends Controller
      */
     public function create()
     {
+        $user = Auth::user();
+        $this->authorize('menu-permission', $user);
+
         return view('hotel_type.create');
     }
 
@@ -29,11 +36,12 @@ class HotelTypeController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
+        $this->authorize('menu-permission', $user);
+
         $data = new HotelType();
         $data->name = $request->get('type_name');
         $data->save();
-        // dd($data);
-
         return redirect()->route("hoteltype.index")->with('status', "Horray, Your new category data is already inserted");
     }
 
@@ -48,51 +56,25 @@ class HotelTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(HotelType $type)
+    public function edit(string $id)
     {
+        $user = Auth::user();
+        $this->authorize('menu-permission', $user);
+
+        $type = HotelType::find($id);
         $data = $type;
-        // $data = Types::find($type);
-        // dd($data);
         return view('hotel_type.edit', compact('data'));
     }
 
-    public function getEditForm(Request $request)
-    {
-        $id = $request->id;
-        $data = HotelType::find($id);
-
-        return response()->json(
-            array(
-                'status' => 'oke',
-                'msg' => view('hotel_type.getEditForm', compact('data'))->render()
-            ),
-            200
-        );
-    }
-
-    public function saveDataTD(Request $request)
-    {
-        $id = $request->id;
-        $data = HotelType::find($id);
-        $data->name = $request->name;
-        $data->save();
-        return response()->json(
-            array(
-                'status' => 'oke',
-                'msg' => 'type data is up-to-date !'
-            ),
-            200
-        );
-    }
-
-    public function deleteData(Request $request)
-    {
-    }
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, HotelType $type)
+    public function update(Request $request, string $id)
     {
+        $user = Auth::user();
+        $this->authorize('menu-permission', $user);
+
+        $type = HotelType::find($id);
         $updateData = $type;
         $updateData->name = $request->type_name;
         $updateData->save();
@@ -102,8 +84,12 @@ class HotelTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(HotelType $type)
+    public function destroy(string $id)
     {
+        $user = Auth::user();
+        $this->authorize('menu-permission', $user);
+
+        $type = HotelType::find($id);
         try {
             $deletedData = $type;
             $deletedData->delete();

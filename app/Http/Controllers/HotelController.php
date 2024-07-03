@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Hotel;
 use App\Models\HotelType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
 class HotelController extends Controller
@@ -34,6 +35,9 @@ class HotelController extends Controller
      */
     public function create()
     {
+        $user = Auth::user();
+        $this->authorize('create-permission', $user);
+
         $types = HotelType::orderBy('name')->get();
         return view('hotel.create', compact('types'));
     }
@@ -43,6 +47,9 @@ class HotelController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
+        $this->authorize('create-permission', $user);
+
         $request->validate(
             [
                 'name' => 'required',
@@ -89,6 +96,9 @@ class HotelController extends Controller
      */
     public function edit(string $id)
     {
+        $user = Auth::user();
+        $this->authorize('edit-permission', $user);
+
         $hotel = Hotel::find($id);
         $types = HotelType::all();
         return view("hotel.edit", ['data' => $hotel, 'types' => $types]);
@@ -99,6 +109,9 @@ class HotelController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $user = Auth::user();
+        $this->authorize('edit-permission', $user);
+
         $data = Hotel::find($id);
         $data->name = $request->get('name');
         $data->address = $request->get('address');
@@ -114,6 +127,9 @@ class HotelController extends Controller
      */
     public function destroy(Hotel $hotel)
     {
+        $user = Auth::user();
+        $this->authorize('delete-permission', $user);
+
         try {
             $deletedData = $hotel;
             $deletedData->delete();

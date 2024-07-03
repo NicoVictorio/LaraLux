@@ -83,9 +83,11 @@
                                     <p>Pajak <span>IDR {{$pajak}}</span></p>
                                     <h2>Grand Total <span>IDR {{$grandtotal}}</span></h2>
                                 </div>
+                                @can('create-transaction-permission', Auth::user())
                                 <div class="cart-btn">
                                     <a href="{{ route('transaction.create') }}" class="btn btn-info">Check Out</a>
                                 </div>
+                                @endcan
                             </div>
                         </div>
                     </div>

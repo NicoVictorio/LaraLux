@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
@@ -16,7 +17,12 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::all();
+        $role = Auth::user()->role;
+        if ($role == "owner" || $role == "staff") {
+            $transactions = Transaction::all();
+        } else {
+            $transactions = Transaction::where('user_id', Auth::user()->id)->get();
+        }
         $users = User::all();
         $products = Product::all();
         return view("transaction.index", ['datas' => $transactions, 'users' => $users, 'products' => $products]);
@@ -27,6 +33,9 @@ class TransactionController extends Controller
      */
     public function create()
     {
+        $user = Auth::user();
+        $this->authorize('create-transaction-permission', $user);
+
         $users = User::all();
         $products = Product::all();
         return view("transaction.create", ['users' => $users, 'products' => $products]);
@@ -37,6 +46,9 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
+        $this->authorize('create-transaction-permission', $user);
+
         $transaction = new Transaction();
         $transaction->user_id = $request->get('user');
         $transaction->save();
@@ -84,6 +96,9 @@ class TransactionController extends Controller
      */
     public function edit(string $id)
     {
+        $user = Auth::user();
+        $this->authorize('edit-delete-transaction-permission', $user);
+
         $transaction = Transaction::find($id);
         $dataProducts = $transaction->products;
         $users = User::all();
@@ -101,6 +116,9 @@ class TransactionController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $user = Auth::user();
+        $this->authorize('edit-delete-transaction-permission', $user);
+
         $transaction = Transaction::find($id);
         $transaction->user_id = $request->get('user');
         $transaction->save();
@@ -124,6 +142,9 @@ class TransactionController extends Controller
      */
     public function destroy(string $id)
     {
+        $user = Auth::user();
+        $this->authorize('edit-delete-transaction-permission', $user);
+
         try {
             $transaction = Transaction::find($id);
             $deletedData = $transaction;

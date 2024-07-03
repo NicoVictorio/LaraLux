@@ -6,6 +6,7 @@ use App\Models\Hotel;
 use App\Models\Product;
 use App\Models\ProductType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 
 class ProductController extends Controller
@@ -25,9 +26,12 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $user = Auth::user();
+        $this->authorize('create-permission', $user);
+
         $hotels = Hotel::orderBy('name')->get();
         $type = ProductType::orderBy('name')->get();
-        return view('product.create', compact('hotels', 'type'));
+        return view('product.create', compact('hotel_selected', 'hotels', 'type'));
     }
 
     /**
@@ -35,6 +39,9 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
+        $this->authorize('create-permission', $user);
+
         $request->validate(
             [
                 'name' => 'required',
@@ -42,7 +49,6 @@ class ProductController extends Controller
                 'type' => 'required',
                 'description' => 'required',
                 'available_room' => 'required',
-                // 'image' => 'required',
                 'hotel' => 'required',
             ]
         );
@@ -53,10 +59,9 @@ class ProductController extends Controller
         $data->type_id = $request->type;
         $data->description = $request->description;
         $data->available_room = $request->available_room;
-        // $data->image = $request->image;
         $data->hotel_id = $request->hotel;
         $data->save();
-        return redirect()->route('hotel.index')->with('status', 'Berhasil Ditambah!');
+        return view('product.formUploadPhoto', compact('data'));
     }
 
     /**
@@ -74,6 +79,9 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
+        $user = Auth::user();
+        $this->authorize('edit-permission', $user);
+
         $data = Product::find($id);
         $hotel = Hotel::all();
         $types = ProductType::all();
@@ -85,6 +93,9 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $user = Auth::user();
+        $this->authorize('edit-permission', $user);
+
         $product = Product::find($id);
 
         if (!$product) {
@@ -99,21 +110,25 @@ class ProductController extends Controller
 
         $product->save();
 
-        return redirect()->route('hotel.index')->with('status', 'Horray, Your product data is already updated');
+        return redirect()->route('hotel.show', $product->hotel_id)->with('status', 'Horray, Your product data is already updated');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(string $id)
     {
+        $user = Auth::user();
+        $this->authorize('delete-permission', $user);
+
+        $product = Product::find($id);
         try {
             $deletedData = $product;
             $deletedData->delete();
-            return redirect()->route('product.index')->with('status', 'Horray ! Your data is successfully deleted !');
+            return redirect()->route('hotel.show', $product->hotel_id)->with('status', 'Horray ! Your data is successfully deleted !');
         } catch (\PDOException $ex) {
             $msg = "Failed to delete data ! Make sure there is no related data before deleting it";
-            return redirect()->route('product.index')->with('status', $msg);
+            return redirect()->route('hotel.show', $product->hotel_id)->with('status', $msg);
         }
     }
 
@@ -126,17 +141,37 @@ class ProductController extends Controller
 
     public function simpanPhoto(Request $request)
     {
-        $file = $request->file("file_photo");
+        $file_photo_kamar = $request->file("file_photo_kamar");
+        $file_photo_kamar2 = $request->file("file_photo_kamar2");
+        $file_photo_kamar3 = $request->file("file_photo_kamar3");
+        $file_photo_kamar4 = $request->file("file_photo_kamar4");
         $folder = 'img/product/' . $request->product_id;
         @File::makeDirectory(public_path() . "/" . $folder);
-        $filename = time() . "_" . $file->getClientOriginalName();
-        $file->move($folder, $filename);
-        return redirect()->route('hotel.index')->with('status', 'photo terupload');
+        $filename1 = time() . "_" . $file_photo_kamar->getClientOriginalName();
+        $filename2 = time() . "_" . $file_photo_kamar2->getClientOriginalName();
+        $filename3 = time() . "_" . $file_photo_kamar3->getClientOriginalName();
+        $filename4 = time() . "_" . $file_photo_kamar4->getClientOriginalName();
+        $file_photo_kamar->move($folder, $filename1);
+        $file_photo_kamar2->move($folder, $filename2);
+        $file_photo_kamar3->move($folder, $filename3);
+        $file_photo_kamar4->move($folder, $filename4);
+        return redirect()->route('hotel.show', $request->hotel_id)->with('status', 'Product Berhasil Ditambah!');
     }
 
     public function deletePhoto(Request $request)
     {
         File::delete(public_path() . "/" . $request->filepath);
         return redirect()->route('hotel.index')->with('status', 'photo dihapus');
+    }
+
+    public function createProduct(string $id)
+    {
+        $user = Auth::user();
+        $this->authorize('create-permission', $user);
+
+        $hotel_selected = Hotel::find($id);
+        $hotels = Hotel::orderBy('name')->get();
+        $type = ProductType::orderBy('name')->get();
+        return view('product.create', compact('hotel_selected', 'hotels', 'type'));
     }
 }
