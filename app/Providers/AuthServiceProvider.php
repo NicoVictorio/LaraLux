@@ -25,9 +25,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
         Gate::define('create-transaction-permission','App\Policies\HotelPolicy@createTransaction');
         Gate::define('edit-delete-transaction-permission','App\Policies\HotelPolicy@editDeleteTransaction');
-
         Gate::define('menu-permission','App\Policies\HotelPolicy@menu');
-
         Gate::define('create-permission','App\Policies\HotelPolicy@create');
         Gate::define('edit-permission','App\Policies\HotelPolicy@edit');
         Gate::define('delete-permission','App\Policies\HotelPolicy@delete');

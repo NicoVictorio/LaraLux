@@ -64,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report/mostReservedProduct', [ReportController::class, 'mostReservedProduct'])->name('rp_mostReservedProduct');
     Route::get('/report/mostMembership', [ReportController::class, 'mostMembership'])->name('rp_mostMembership');
     Route::get('/report/mostProduct', [ReportController::class, 'mostProduct'])->name('rp_mostProduct');
+    Route::get('/report/totalTransaksi', [ReportController::class, 'totalTransaksi'])->name('rp_totalTransaksi');
 });
 
 // Auth

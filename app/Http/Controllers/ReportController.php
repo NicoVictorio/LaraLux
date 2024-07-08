@@ -43,4 +43,16 @@ class ReportController extends Controller
             ->get();
         return view('report.mostProduct', compact('products'));
     }
+
+    public function totalTransaksi()
+    {
+        $products = DB::table('product_transaction')
+            ->join('transactions as t', 'product_transaction.transaction_id', '=', 't.id')
+            ->join('users as u','t.user_id','=','u.id')
+            ->select('u.name as user_name', DB::raw('SUM(product_transaction.subtotal) as total_transaksi'))
+            ->groupBy('u.name')
+            ->orderBy('total_transaksi','desc')
+            ->get();
+        return view('report.totalTransaksi', compact('products'));
+    }
 }
